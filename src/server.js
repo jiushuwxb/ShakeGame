@@ -53,7 +53,19 @@ app.get('/api/config', (req, res) => {
 app.get('/api/wechat/authorize-url', (req, res) => {
   const redirectUri = req.query.redirectUri || `${FRONTEND_BASE_URL}/`;
 
+  console.log('[wechat authorize-url] request', {
+    redirectUri,
+    host: req.headers.host,
+    origin: req.headers.origin,
+    referer: req.headers.referer,
+    userAgent: req.headers['user-agent'],
+    publicBaseUrl: PUBLIC_BASE_URL,
+    frontendBaseUrl: FRONTEND_BASE_URL,
+    hasWechatAppId: Boolean(WECHAT_APP_ID),
+  });
+
   if (!WECHAT_APP_ID) {
+    console.log('[wechat authorize-url] missing app id');
     return res.status(501).json({ error: 'WECHAT_APP_ID is not configured.' });
   }
 
@@ -65,6 +77,10 @@ app.get('/api/wechat/authorize-url', (req, res) => {
   url.searchParams.set('scope', WECHAT_OAUTH_SCOPE);
   url.searchParams.set('state', 'shake');
 
+  console.log('[wechat authorize-url] response', {
+    callbackUrl,
+    url: `${url.toString()}#wechat_redirect`,
+  });
   res.json({ url: `${url.toString()}#wechat_redirect` });
 });
 
@@ -73,17 +89,35 @@ app.get('/api/wechat/callback', (req, res) => {
   const code = req.query.code;
   const target = new URL(redirectUri);
 
+  console.log('[wechat callback] request', {
+    redirectUri,
+    code,
+    state: req.query.state,
+    host: req.headers.host,
+    userAgent: req.headers['user-agent'],
+  });
+
   if (code) target.searchParams.set('code', code);
   if (req.query.state) target.searchParams.set('state', req.query.state);
 
+  console.log('[wechat callback] redirect', { target: target.toString() });
   res.redirect(target.toString());
 });
 
 app.get('/api/wechat/user', async (req, res) => {
   const code = req.query.code;
 
+  console.log('[wechat user] request', {
+    code,
+    host: req.headers.host,
+    userAgent: req.headers['user-agent'],
+    hasWechatAppId: Boolean(WECHAT_APP_ID),
+    hasWechatSecret: Boolean(WECHAT_APP_SECRET),
+  });
+
   if (!code) return res.status(400).json({ error: 'Missing code.' });
   if (!WECHAT_APP_ID || !WECHAT_APP_SECRET) {
+    console.log('[wechat user] oauth not configured');
     return res.status(501).json({ error: 'WeChat OAuth is not configured.' });
   }
 
@@ -94,22 +128,27 @@ app.get('/api/wechat/user', async (req, res) => {
     tokenUrl.searchParams.set('code', code);
     tokenUrl.searchParams.set('grant_type', 'authorization_code');
 
-    const tokenResponse = await fetchJson(tokenUrl);
-    if (tokenResponse.errcode) return res.status(502).json(tokenResponse);
+      const tokenResponse = await fetchJson(tokenUrl);
+      console.log('[wechat user] token response', tokenResponse);
+      if (tokenResponse.errcode) return res.status(502).json(tokenResponse);
 
     const userUrl = new URL('https://api.weixin.qq.com/sns/userinfo');
     userUrl.searchParams.set('access_token', tokenResponse.access_token);
     userUrl.searchParams.set('openid', tokenResponse.openid);
     userUrl.searchParams.set('lang', 'zh_CN');
 
-    const userResponse = await fetchJson(userUrl);
-    if (userResponse.errcode) return res.status(502).json(userResponse);
+      const userResponse = await fetchJson(userUrl);
+      console.log('[wechat user] user response', userResponse);
+      if (userResponse.errcode) return res.status(502).json(userResponse);
 
-    res.json(normalizeWechatUser(userResponse));
-  } catch (error) {
-    res.status(502).json({ error: 'Failed to request WeChat API.', detail: error.message });
-  }
-});
+      const normalizedUser = normalizeWechatUser(userResponse);
+      console.log('[wechat user] normalized response', normalizedUser);
+      res.json(normalizedUser);
+    } catch (error) {
+      console.error('[wechat user] error', error);
+      res.status(502).json({ error: 'Failed to request WeChat API.', detail: error.message });
+    }
+  });
 
 app.post('/api/admin/start', requireAdmin, (req, res) => {
   startGame();
