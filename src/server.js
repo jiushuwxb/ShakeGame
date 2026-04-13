@@ -283,6 +283,10 @@ function recordShake(client, message) {
 function startGame() {
   if (endTimer) clearTimeout(endTimer);
 
+  for (const [playerId, player] of game.players.entries()) {
+    if (!player.online) game.players.delete(playerId);
+  }
+
   game.status = 'playing';
   game.startedAt = Date.now();
   game.endsAt = game.startedAt + game.durationMs;
@@ -309,9 +313,9 @@ function resetGame() {
   game.status = 'waiting';
   game.startedAt = null;
   game.endsAt = null;
-  for (const player of game.players.values()) {
-    player.count = 0;
-    player.updatedAt = Date.now();
+  game.players.clear();
+  for (const client of clients.values()) {
+    if (client.role === 'player') client.playerId = null;
   }
   broadcastSnapshot();
 }
