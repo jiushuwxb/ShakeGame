@@ -36,18 +36,18 @@
 
 建议至少准备两个 HTTPS 域名：
 
-- H5 前端域名：`https://www.example.com`
-- 后端接口域名：`https://api.example.com`
+- 当前后端域名：`https://fun.imc-china.com.cn`
+- 如果前端也部署在同域名下，可直接共用该域名
 
 也可以只用一个域名，但当前代码结构更适合前后端分域部署。
 
 对应关系建议：
 
-- `https://www.example.com/user/index.html`
-- `https://www.example.com/user/game.html`
-- `https://www.example.com/screen/index.html`
-- `https://api.example.com/health`
-- `wss://api.example.com`
+- `https://fun.imc-china.com.cn/user/index.html`
+- `https://fun.imc-china.com.cn/user/game.html`
+- `https://fun.imc-china.com.cn/screen/index.html`
+- `https://fun.imc-china.com.cn/health`
+- `wss://fun.imc-china.com.cn`
 
 ## 3. 服务器环境要求
 
@@ -130,9 +130,9 @@ cp .env.example .env
 
 ```env
 PORT=3000
-PUBLIC_BASE_URL=https://api.example.com
-FRONTEND_BASE_URL=https://www.example.com
-CORS_ORIGIN=https://www.example.com
+PUBLIC_BASE_URL=https://fun.imc-china.com.cn
+FRONTEND_BASE_URL=https://fun.imc-china.com.cn
+CORS_ORIGIN=https://fun.imc-china.com.cn
 
 GAME_DURATION_SECONDS=30
 MAX_PLAYERS=10
@@ -221,8 +221,8 @@ pm2 start npm --name shake-backend -- start
 
 ```js
 window.SHAKE_CONFIG = {
-  apiBaseUrl: 'https://api.example.com',
-  wsUrl: 'wss://api.example.com',
+  apiBaseUrl: 'https://fun.imc-china.com.cn',
+  wsUrl: 'wss://fun.imc-china.com.cn',
   questionnaireUrl: 'https://www.wjx.cn/vm/your-questionnaire.aspx',
   activityTitle: '希捷极速传输挑战赛',
   brandLine: 'Seagate Data Transfer Challenge'
@@ -260,7 +260,7 @@ window.SHAKE_CONFIG = {
 ```nginx
 server {
     listen 80;
-    server_name www.example.com;
+    server_name fun.imc-china.com.cn;
 
     root /data/www/shake-fronted;
     index index.html;
@@ -285,7 +285,7 @@ map $http_upgrade $connection_upgrade {
 
 server {
     listen 80;
-    server_name api.example.com;
+    server_name fun.imc-china.com.cn;
 
     location / {
         proxy_pass http://127.0.0.1:3000;
@@ -320,7 +320,7 @@ sudo systemctl reload nginx
 
 ```bash
 sudo apt install -y certbot python3-certbot-nginx
-sudo certbot --nginx -d www.example.com -d api.example.com
+sudo certbot --nginx -d fun.imc-china.com.cn
 ```
 
 证书签发完成后：
@@ -347,8 +347,8 @@ sudo certbot --nginx -d www.example.com -d api.example.com
 
 打开：
 
-- `https://api.example.com/health`
-- `https://api.example.com/api/config`
+- `https://fun.imc-china.com.cn/health`
+- `https://fun.imc-china.com.cn/api/config`
 
 确认：
 
@@ -360,7 +360,7 @@ sudo certbot --nginx -d www.example.com -d api.example.com
 
 打开：
 
-- `https://www.example.com/user/index.html`
+- `https://fun.imc-china.com.cn/user/index.html`
 
 确认：
 
@@ -373,7 +373,7 @@ sudo certbot --nginx -d www.example.com -d api.example.com
 
 打开：
 
-- `https://www.example.com/screen/index.html?adminToken=你的口令`
+- `https://fun.imc-china.com.cn/screen/index.html?adminToken=你的口令`
 
 确认：
 
@@ -463,9 +463,9 @@ git pull
 
 ```env
 PORT=3000
-PUBLIC_BASE_URL=https://api.example.com
-FRONTEND_BASE_URL=https://www.example.com
-CORS_ORIGIN=https://www.example.com
+PUBLIC_BASE_URL=https://fun.imc-china.com.cn
+FRONTEND_BASE_URL=https://fun.imc-china.com.cn
+CORS_ORIGIN=https://fun.imc-china.com.cn
 GAME_DURATION_SECONDS=30
 MAX_PLAYERS=10
 QUESTIONNAIRE_URL=https://www.wjx.cn/vm/your-questionnaire.aspx
@@ -475,4 +475,4 @@ WECHAT_APP_SECRET=
 WECHAT_OAUTH_SCOPE=snsapi_userinfo
 ```
 
-如果你后续确定真实域名，我可以继续把这份文档里的 `example.com` 全部替换成你们的正式域名，并顺手给你出一份可直接复制的 Nginx 配置文件。*** End Patch
+如果你们最终确认前后端都挂在 `fun.imc-china.com.cn`，这份文档已经可以直接作为部署基线使用；如果后续还要拆成前端域名和后端域名两套，我再给你改成双域名版本。
