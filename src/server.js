@@ -12,7 +12,7 @@ const server = http.createServer(app);
 const wss = new WebSocketServer({ server });
 
 const PORT = Number(process.env.PORT || 3000);
-const GAME_DURATION_MS = Number(process.env.GAME_DURATION_SECONDS || 60) * 1000;
+const GAME_DURATION_MS = Number(process.env.GAME_DURATION_SECONDS || 15) * 1000;
 const MAX_PLAYERS = Number(process.env.MAX_PLAYERS || 10);
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
 const PUBLIC_BASE_URL = trimSlash(process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`);

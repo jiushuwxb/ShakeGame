@@ -29,7 +29,7 @@ npm start
 - `GET /api/wechat/authorize-url?redirectUri=...`: 生成微信授权链接。
 - `GET /api/wechat/callback`: 微信 OAuth 回调，自动带 `code` 跳回 H5。
 - `GET /api/wechat/user?code=...`: 通过 code 获取微信头像昵称。
-- `POST /api/admin/start`: 开始 60 秒游戏。
+- `POST /api/admin/start`: 开始 15 秒游戏。
 - `POST /api/admin/end`: 结束游戏。
 - `POST /api/admin/reset`: 重置活动并清零分数，已连接玩家保留。
 
@@ -54,5 +54,5 @@ npm start
 2. 部署前端静态文件到 H5 域名。
 3. 打开大屏页 `/screen.html?adminToken=你的口令`。
 4. 手机扫码进入 `/index.html`，完成微信授权后等待开始。
-5. 大屏点击“开始比赛”，60 秒后自动结束并展示排名。
+5. 大屏点击“开始比赛”，15 秒后自动结束并展示排名。
 6. 点击“重置活动”可清零分数并进入下一轮，已连接玩家无需重新扫码。

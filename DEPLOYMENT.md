@@ -134,7 +134,7 @@ PUBLIC_BASE_URL=https://fun.imc-china.com.cn
 FRONTEND_BASE_URL=https://fun.imc-china.com.cn
 CORS_ORIGIN=https://fun.imc-china.com.cn
 
-GAME_DURATION_SECONDS=30
+GAME_DURATION_SECONDS=15
 MAX_PLAYERS=10
 QUESTIONNAIRE_URL=https://www.wjx.cn/vm/your-questionnaire.aspx
 ADMIN_TOKEN=change-me
@@ -149,7 +149,7 @@ WECHAT_OAUTH_SCOPE=snsapi_userinfo
 - `PUBLIC_BASE_URL` 必须是后端公网 HTTPS 地址
 - `FRONTEND_BASE_URL` 必须是前端公网地址
 - `CORS_ORIGIN` 至少包含前端域名
-- `GAME_DURATION_SECONDS=30` 表示比赛 30 秒
+- `GAME_DURATION_SECONDS=15` 表示比赛 15 秒
 - 如果暂时不做微信授权，可保留 `WECHAT_APP_ID`、`WECHAT_APP_SECRET` 为空
 
 ### 5.3 本地验证后端
@@ -170,7 +170,7 @@ curl http://127.0.0.1:3000/api/config
 预期：
 
 - `/health` 返回 `ok: true`
-- `/api/config` 中 `gameDurationSeconds` 应为 `30`
+- `/api/config` 中 `gameDurationSeconds` 应为 `15`
 
 ### 5.4 使用 PM2 托管
 
@@ -353,7 +353,7 @@ sudo certbot --nginx -d fun.imc-china.com.cn
 确认：
 
 - 返回正常 JSON
-- `gameDurationSeconds` 为 `30`
+- `gameDurationSeconds` 为 `15`
 - `maxPlayers` 为 `10`
 
 ### 10.2 手机端验收
@@ -392,7 +392,7 @@ sudo certbot --nginx -d fun.imc-china.com.cn
 3. 大屏点击开始
 4. 倒计时结束后正式开始比赛
 5. 手机摇动时大屏柱状图实时增长
-6. 30 秒后自动结束
+6. 15 秒后自动结束
 7. 大屏显示结算榜单
 
 ## 11. 常见运维命令
@@ -466,7 +466,7 @@ PORT=3000
 PUBLIC_BASE_URL=https://fun.imc-china.com.cn
 FRONTEND_BASE_URL=https://fun.imc-china.com.cn
 CORS_ORIGIN=https://fun.imc-china.com.cn
-GAME_DURATION_SECONDS=30
+GAME_DURATION_SECONDS=15
 MAX_PLAYERS=10
 QUESTIONNAIRE_URL=https://www.wjx.cn/vm/your-questionnaire.aspx
 ADMIN_TOKEN=change-me
