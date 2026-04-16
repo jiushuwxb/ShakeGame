@@ -13,7 +13,8 @@ const wss = new WebSocketServer({ server });
 
 const PORT = Number(process.env.PORT || 3000);
 const GAME_DURATION_MS = Number(process.env.GAME_DURATION_SECONDS || 15) * 1000;
-const MAX_PLAYERS = Number(process.env.MAX_PLAYERS || 10);
+const MAX_PLAYERS = Number.MAX_SAFE_INTEGER;
+const LEADERBOARD_LIMIT = 10;
 const ADMIN_TOKEN = process.env.ADMIN_TOKEN || '';
 const PUBLIC_BASE_URL = trimSlash(process.env.PUBLIC_BASE_URL || `http://localhost:${PORT}`);
 const FRONTEND_BASE_URL = trimSlash(process.env.FRONTEND_BASE_URL || 'http://localhost:5173');
@@ -47,7 +48,7 @@ app.get('/api/config', (req, res) => {
     wsUrl: toWsUrl(PUBLIC_BASE_URL),
     questionnaireUrl: QUESTIONNAIRE_URL,
     gameDurationSeconds: Math.round(GAME_DURATION_MS / 1000),
-    maxPlayers: MAX_PLAYERS,
+    leaderboardLimit: LEADERBOARD_LIMIT,
   });
 });
 
@@ -331,7 +332,7 @@ function snapshot() {
     startedAt: game.startedAt,
     endsAt: game.endsAt,
     serverTime: Date.now(),
-    maxPlayers: MAX_PLAYERS,
+    leaderboardLimit: LEADERBOARD_LIMIT,
     questionnaireUrl: QUESTIONNAIRE_URL,
     players,
   };

@@ -28,7 +28,7 @@
 其他关键配置：
 
 - 服务端端口：`PORT`，默认 `3000`
-- 最大人数：`MAX_PLAYERS`，默认 `10`
+- 房间人数不限，大屏实时榜单展示前 `10` 名
 - 管理口令：`ADMIN_TOKEN`
 - 微信网页授权：`WECHAT_APP_ID`、`WECHAT_APP_SECRET`
 
@@ -135,7 +135,7 @@ FRONTEND_BASE_URL=https://fun.imc-china.com.cn
 CORS_ORIGIN=https://fun.imc-china.com.cn
 
 GAME_DURATION_SECONDS=15
-MAX_PLAYERS=10
+LEADERBOARD_LIMIT=10
 QUESTIONNAIRE_URL=https://www.wjx.cn/vm/your-questionnaire.aspx
 ADMIN_TOKEN=change-me
 
@@ -354,7 +354,7 @@ sudo certbot --nginx -d fun.imc-china.com.cn
 
 - 返回正常 JSON
 - `gameDurationSeconds` 为 `15`
-- `maxPlayers` 为 `10`
+- 房间人数不限，大屏实时榜单仍只展示前 10 名
 
 ### 10.2 手机端验收
 
@@ -467,7 +467,7 @@ PUBLIC_BASE_URL=https://fun.imc-china.com.cn
 FRONTEND_BASE_URL=https://fun.imc-china.com.cn
 CORS_ORIGIN=https://fun.imc-china.com.cn
 GAME_DURATION_SECONDS=15
-MAX_PLAYERS=10
+LEADERBOARD_LIMIT=10
 QUESTIONNAIRE_URL=https://www.wjx.cn/vm/your-questionnaire.aspx
 ADMIN_TOKEN=change-me
 WECHAT_APP_ID=
