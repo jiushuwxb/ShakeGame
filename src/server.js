@@ -217,6 +217,11 @@ function handleMessage(clientId, message) {
     return;
   }
 
+  if (message.type === 'leave_player') {
+    disconnectClient(clientId, 'player_left');
+    return;
+  }
+
   if (message.type === 'admin_start') {
     if (!isAdminMessage(message)) return send(client.ws, { type: 'error', error: 'Invalid admin token.' });
     startGame();
@@ -349,6 +354,23 @@ function reconcileGameState() {
 function broadcastSnapshot() {
   const payload = { type: 'snapshot', data: snapshot() };
   for (const { ws } of clients.values()) send(ws, payload);
+}
+
+function disconnectClient(clientId, reason = 'closed') {
+  const client = clients.get(clientId);
+  if (!client) return;
+
+  if (client.playerId) {
+    const player = game.players.get(client.playerId);
+    if (player) player.online = false;
+  }
+
+  if (client.ws.readyState === 0 || client.ws.readyState === 1) {
+    client.ws.close(1000, reason);
+  }
+
+  clients.delete(clientId);
+  broadcastSnapshot();
 }
 
 function send(ws, payload) {
