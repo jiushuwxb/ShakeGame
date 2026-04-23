@@ -267,6 +267,7 @@ function joinPlayer(client, profile) {
 }
 
 function recordShake(client, message) {
+  reconcileGameState();
   if (game.status !== 'playing') return;
 
   const playerId = client.playerId || message.playerId;
@@ -322,6 +323,7 @@ function resetGame() {
 }
 
 function snapshot() {
+  reconcileGameState();
   const players = [...game.players.values()]
     .sort((a, b) => b.count - a.count || a.joinedAt - b.joinedAt)
     .map((player, index) => ({ ...player, rank: index + 1 }));
@@ -336,6 +338,12 @@ function snapshot() {
     questionnaireUrl: QUESTIONNAIRE_URL,
     players,
   };
+}
+
+function reconcileGameState() {
+  if (game.status !== 'playing' || !game.endsAt) return;
+  if (Date.now() < game.endsAt) return;
+  endGame();
 }
 
 function broadcastSnapshot() {
